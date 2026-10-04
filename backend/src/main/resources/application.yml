@@ -1,0 +1,39 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: digitaltwin-backend
+
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/connected_vehicles}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+digitaltwin:
+  mqtt:
+    broker-url: ${MQTT_BROKER_URL:tcp://localhost:1883}
+    client-id: digitaltwin-backend-${random.uuid}
+    telemetry-topic-filter: ${MQTT_TELEMETRY_TOPIC:vehicles/+/telemetry}
+    qos: ${MQTT_QOS:1}
+  freshness:
+    lambda: ${DIGITAL_TWIN_FRESHNESS_LAMBDA:0.2}
+  validation:
+    max-plausible-speed-mps: ${DIGITAL_TWIN_MAX_SPEED:35.0}
+    stale-threshold-seconds: ${DIGITAL_TWIN_STALE_THRESHOLD:10}
+  events:
+    reroute-severity-threshold: ${DIGITAL_TWIN_REROUTE_SEVERITY:2}
+
+logging:
+  level:
+    com.project.digitaltwin: INFO
+    org.springframework.integration.mqtt: INFO
